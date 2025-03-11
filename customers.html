@@ -25,27 +25,46 @@
     </div>
 
     <script>
+        // Default mock data for customers (only Hamza, Ahmed, and Ali with phone number 06666666)
+        const defaultCustomers = [
+            { id: 1, name: 'Hamza', email: 'hamza@example.com', phone: '06666666' },
+            { id: 2, name: 'Ahmed', email: 'ahmed@example.com', phone: '06666666' },
+            { id: 3, name: 'Ali', email: 'ali@example.com', phone: '06666666' }
+        ];
+
+        // Function to populate the table with data
+        function populateTable(data) {
+            const tableBody = document.getElementById('customers-table');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            data.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to fetch data from the SQL database
         async function fetchCustomers() {
             try {
                 const response = await fetch('http://localhost:3005/customers');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
                 const customers = await response.json();
-                const tableBody = document.getElementById('customers-table');
-
-                customers.forEach(customer => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${customer.id}</td>
-                        <td>${customer.name}</td>
-                        <td>${customer.email}</td>
-                        <td>${customer.phone}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+                populateTable(customers); // Populate table with SQL data
             } catch (error) {
                 console.error('Error fetching customers:', error);
+                populateTable(defaultCustomers); // Fallback to default data
             }
         }
 
+        // Call the function to fetch data (or fallback to default data)
         fetchCustomers();
     </script>
 </body>
