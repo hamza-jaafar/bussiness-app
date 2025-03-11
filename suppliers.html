@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suppliers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4 text-success display-4">Suppliers</h1>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company Name</th>
+                    <th>Contact Email</th>
+                    <th>Industry</th>
+                </tr>
+            </thead>
+            <tbody id="suppliers-table">
+                <!-- Rows will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchSuppliers() {
+            try {
+                const response = await fetch('http://localhost:3005/suppliers');
+                const suppliers = await response.json();
+                const tableBody = document.getElementById('suppliers-table');
+
+                suppliers.forEach(supplier => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${supplier.id}</td>
+                        <td>${supplier.company_name}</td>
+                        <td>${supplier.contact_email}</td>
+                        <td>${supplier.industry}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching suppliers:', error);
+            }
+        }
+
+        fetchSuppliers();
+    </script>
+</body>
+</html>
