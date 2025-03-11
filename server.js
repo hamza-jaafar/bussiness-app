@@ -16,7 +16,7 @@ const pool = mysql.createPool({
 });
 
 // Servir les fichiers HTML statiques
-app.use(express.static(path.join(__dirname, '')));
+app.use(express.static(path.join(__dirname, '/')));
 
 // Route pour les clients
 app.get('/customers', async (req, res) => {
