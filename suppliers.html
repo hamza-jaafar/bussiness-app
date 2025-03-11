@@ -25,27 +25,46 @@
     </div>
 
     <script>
+        // Default mock data for suppliers (only Hamza, Ahmed, and Ali)
+        const defaultSuppliers = [
+            { id: 1, company_name: 'Hamza LLC', contact_email: 'hamza@example.com', industry: 'Technology' },
+            { id: 2, company_name: 'Ahmed & Co.', contact_email: 'ahmed@example.com', industry: 'Healthcare' },
+            { id: 3, company_name: 'Ali Enterprises', contact_email: 'ali@example.com', industry: 'Construction' }
+        ];
+
+        // Function to populate the table with data
+        function populateTable(data) {
+            const tableBody = document.getElementById('suppliers-table');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            data.forEach(supplier => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${supplier.id}</td>
+                    <td>${supplier.company_name}</td>
+                    <td>${supplier.contact_email}</td>
+                    <td>${supplier.industry}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to fetch data from the SQL database
         async function fetchSuppliers() {
             try {
                 const response = await fetch('http://localhost:3005/suppliers');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
                 const suppliers = await response.json();
-                const tableBody = document.getElementById('suppliers-table');
-
-                suppliers.forEach(supplier => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${supplier.id}</td>
-                        <td>${supplier.company_name}</td>
-                        <td>${supplier.contact_email}</td>
-                        <td>${supplier.industry}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+                populateTable(suppliers); // Populate table with SQL data
             } catch (error) {
                 console.error('Error fetching suppliers:', error);
+                populateTable(defaultSuppliers); // Fallback to default data
             }
         }
 
+        // Call the function to fetch data (or fallback to default data)
         fetchSuppliers();
     </script>
 </body>
